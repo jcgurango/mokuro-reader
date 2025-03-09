@@ -10,8 +10,8 @@ export type MiscSettingsKey = keyof MiscSettings;
 
 const defaultSettings: MiscSettings = {
   galleryLayout: 'grid',
-  gallerySorting: 'ASC',
-}
+  gallerySorting: 'ASC'
+};
 
 const stored = browser ? window.localStorage.getItem('miscSettings') : undefined;
 

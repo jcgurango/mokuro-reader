@@ -16,15 +16,17 @@ function sortManga(a: Volume, b: Volume) {
   return 0;
 }
 
+export const manga = derived(
+  [page, catalog as unknown as Readable<Catalog[]>],
+  ([$page, $catalog]) => {
+    if ($page && $catalog) {
+      return $catalog.find((item) => item.id === $page.params.manga)?.manga.sort(sortManga);
+    }
+  }
+);
 
-export const manga = derived([page, catalog as unknown as Readable<Catalog[]>], ([$page, $catalog]) => {
-  if ($page && $catalog) {
-    return $catalog.find((item) => item.id === $page.params.manga)?.manga.sort(sortManga)
+export const volume = derived([page, manga], ([$page, $manga]) => {
+  if ($page && $manga) {
+    return $manga.find((item) => item.mokuroData.volume_uuid === $page.params.volume);
   }
 });
-
-export const volume = derived(([page, manga]), ([$page, $manga]) => {
-  if ($page && $manga) {
-    return $manga.find((item) => item.mokuroData.volume_uuid === $page.params.volume)
-  }
-})

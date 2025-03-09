@@ -4,7 +4,7 @@ import { showSnackbar } from '$lib/util/snackbar';
 import { requestPersistentStorage } from '$lib/util/upload';
 import { ZipReader, BlobWriter, getMimeType, Uint8ArrayReader } from '@zip.js/zip.js';
 
-export * from './web-import'
+export * from './web-import';
 
 const zipTypes = ['zip', 'cbz', 'ZIP', 'CBZ'];
 const imageTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -21,11 +21,11 @@ export async function unzipManga(file: File) {
       numeric: true,
       sensitivity: 'base'
     });
-  })
+  });
 
   for (const entry of sortedEntries) {
     const mime = getMimeType(entry.filename);
-    const isMokuroFile = entry.filename.split('.').pop() === 'mokuro'
+    const isMokuroFile = entry.filename.split('.').pop() === 'mokuro';
 
     if (imageTypes.includes(mime) || isMokuroFile) {
       const blob = await entry.getData?.(new BlobWriter(mime));
@@ -35,7 +35,7 @@ export async function unzipManga(file: File) {
         if (!file.webkitRelativePath) {
           Object.defineProperty(file, 'webkitRelativePath', {
             value: entry.filename
-          })
+          });
         }
         unzippedFiles[entry.filename] = file;
       }
@@ -46,14 +46,14 @@ export async function unzipManga(file: File) {
 }
 
 function getDetails(file: File) {
-  const { webkitRelativePath, name } = file
+  const { webkitRelativePath, name } = file;
   const split = name.split('.');
   const ext = split.pop();
   const filename = split.join('.');
-  let path = filename
+  let path = filename;
 
   if (webkitRelativePath) {
-    path = webkitRelativePath.split('.')[0]
+    path = webkitRelativePath.split('.')[0];
   }
 
   return {
@@ -65,14 +65,16 @@ function getDetails(file: File) {
 
 async function getFile(fileEntry: FileSystemFileEntry) {
   try {
-    return new Promise<File>((resolve, reject) => fileEntry.file((file) => {
-      if (!file.webkitRelativePath) {
-        Object.defineProperty(file, 'webkitRelativePath', {
-          value: fileEntry.fullPath.substring(1)
-        })
-      }
-      resolve(file)
-    }, reject));
+    return new Promise<File>((resolve, reject) =>
+      fileEntry.file((file) => {
+        if (!file.webkitRelativePath) {
+          Object.defineProperty(file, 'webkitRelativePath', {
+            value: fileEntry.fullPath.substring(1)
+          });
+        }
+        resolve(file);
+      }, reject)
+    );
   } catch (err) {
     console.log(err);
   }
@@ -92,14 +94,14 @@ export async function scanFiles(item: FileSystemEntry, files: Promise<File | und
                 await scanFiles(entry, files);
               }
             }
-            readEntries()
+            readEntries();
           } else {
             resolve();
           }
         });
       }
 
-      readEntries()
+      readEntries();
     });
   }
 }
@@ -113,7 +115,7 @@ export async function processFiles(_files: File[]) {
       numeric: true,
       sensitivity: 'base'
     });
-  })
+  });
 
   for (const file of files) {
     const { ext, filename, path } = getDetails(file);
@@ -125,7 +127,6 @@ export async function processFiles(_files: File[]) {
         mangas.push(mokuroData.title_uuid);
       }
 
-
       volumes[path] = {
         ...volumes[path],
         mokuroData,
@@ -134,7 +135,6 @@ export async function processFiles(_files: File[]) {
       continue;
     }
   }
-
 
   for (const file of files) {
     const { ext, path } = getDetails(file);
@@ -145,13 +145,13 @@ export async function processFiles(_files: File[]) {
     if (imageTypes.includes(mimeType)) {
       if (webkitRelativePath) {
         const imageName = webkitRelativePath.split('/').at(-1);
-        let vol = ''
+        let vol = '';
 
         Object.keys(volumes).forEach((key) => {
           if (webkitRelativePath.startsWith(key)) {
-            vol = key
+            vol = key;
           }
-        })
+        });
 
         if (vol && imageName) {
           volumes[vol] = {
@@ -170,7 +170,7 @@ export async function processFiles(_files: File[]) {
       const unzippedFiles = await unzipManga(file);
 
       if (files.length === 1) {
-        processFiles(Object.values(unzippedFiles))
+        processFiles(Object.values(unzippedFiles));
         return;
       }
 

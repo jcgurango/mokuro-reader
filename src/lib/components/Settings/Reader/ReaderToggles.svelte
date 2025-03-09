@@ -3,7 +3,11 @@
   import { Toggle } from 'flowbite-svelte';
 
   $: toggles = [
-    { key: 'defaultFullscreen', text: 'Open reader in fullscreen', value: $settings.defaultFullscreen },
+    {
+      key: 'defaultFullscreen',
+      text: 'Open reader in fullscreen',
+      value: $settings.defaultFullscreen
+    },
     { key: 'textEditable', text: 'Editable text', value: $settings.textEditable },
     { key: 'textBoxBorders', text: 'Text box borders', value: $settings.textBoxBorders },
     { key: 'displayOCR', text: 'OCR enabled', value: $settings.displayOCR },

@@ -32,4 +32,4 @@ export type Manga = {
   id: string;
   title: string;
   filename: string;
-}
+};
