@@ -31,7 +31,12 @@ export async function load() {
 
         for (let file of zip.files) {
           if (file.path.endsWith('.mokuro')) {
-            file.stream().pipe(fs.createWriteStream(metaPath));
+            await new Promise((resolve, reject) => {
+              file.stream().pipe(fs.createWriteStream(metaPath))
+                .on('error', reject)
+                .on('finish', () => resolve(undefined));
+            });
+
             found = true;
             break;
           }

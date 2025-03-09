@@ -9,9 +9,12 @@ export async function GET({ params }) {
   // Build the full path to the requested image
   const cachePath = path.join(process.cwd(), '_library-cache', filename + '.cover');
   const filePath = path.join(process.cwd(), '_library', filename);
+  let found = true;
 
   try {
     if (!fs.existsSync(cachePath)) {
+      found = false;
+
       // Read metadata.
       const zip = await unzipper.Open.file(filePath);
 
@@ -24,12 +27,24 @@ export async function GET({ params }) {
           // Get title name, UUID
           const entryPath = path.parse(file.path);
           const coverPhotoPath = path.join(entryPath.dir, entryPath.name, img_path);
-          file.stream().pipe(fs.createWriteStream(cachePath));
+          const coverPhotoFile = zip.files.find(({ path }) => path === coverPhotoPath);
+
+          if (coverPhotoFile) {
+            await new Promise((resolve, reject) => {
+              coverPhotoFile.stream().pipe(fs.createWriteStream(cachePath))
+                .on('error', reject)
+                .on('finish', () => resolve(undefined));
+            });
+
+            found = true;
+          }
         }
       }
     }
 
-    return new Response(fs.readFileSync(cachePath));
+    if (found) {
+      return new Response(fs.readFileSync(cachePath));
+    }
   } catch (error) {
     console.error(error);
   }
