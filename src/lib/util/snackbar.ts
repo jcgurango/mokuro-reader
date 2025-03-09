@@ -12,7 +12,9 @@ export function showSnackbar(message: string, duration = 3000) {
     message
   });
 
-  setTimeout(() => {
-    snackbarStore.set(undefined);
-  }, duration);
+  if (duration > 0) {
+    setTimeout(() => {
+      snackbarStore.set(undefined);
+    }, duration);
+  }
 }

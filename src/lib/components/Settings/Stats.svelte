@@ -1,6 +1,6 @@
 <script lang="ts">
   import { totalStats } from '$lib/settings';
-  import { AccordionItem } from 'flowbite-svelte';
+  import { AccordionItem, Label } from 'flowbite-svelte';
 </script>
 
 <AccordionItem>

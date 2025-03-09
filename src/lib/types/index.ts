@@ -27,3 +27,9 @@ export type Volume = {
   volumeName: string;
   files: Record<string, File>;
 };
+
+export type Manga = {
+  id: string;
+  title: string;
+  filename: string;
+}
