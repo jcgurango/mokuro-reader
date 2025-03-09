@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import AdmZip from 'adm-zip';
-import { Manga, MokuroData } from '$lib/types';
+import type { Manga, MokuroData } from '$lib/types';
 
 export async function load() {
   const dir = path.join(process.cwd(), '_library');

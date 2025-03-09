@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import mime from 'mime';
 import AdmZip from 'adm-zip';
-import { MokuroData } from '$lib/types/index.js';
+import type { MokuroData } from '$lib/types';
 
 export async function GET({ params }) {
   const { filename } = params;
