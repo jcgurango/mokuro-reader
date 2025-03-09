@@ -4,5 +4,5 @@
 </script>
 
 {#if $snackbarStore?.message && $snackbarStore?.visible}
-  <Toast position="bottom-right" class="z-50">{$snackbarStore?.message}</Toast>
+  <Toast position="bottom-right" class="z-50 fixed">{$snackbarStore?.message}</Toast>
 {/if}
