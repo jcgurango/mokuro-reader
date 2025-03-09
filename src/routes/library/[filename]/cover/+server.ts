@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import AdmZip from 'adm-zip';
+import unzipper from 'unzipper';
 import type { MokuroData } from '$lib/types';
 
 export async function GET({ params }) {
@@ -13,26 +13,18 @@ export async function GET({ params }) {
   try {
     if (!fs.existsSync(cachePath)) {
       // Read metadata.
-      const zip = new AdmZip(filePath);
-      const entries = zip.getEntries();
+      const zip = await unzipper.Open.file(filePath);
 
-      for (let entry of entries) {
-        if (entry.entryName.endsWith('.mokuro')) {
+      for (let file of zip.files) {
+        if (file.path.endsWith('.mokuro')) {
           const {
             pages: [{ img_path }]
-          }: MokuroData = JSON.parse(zip.readAsText(entry));
+          }: MokuroData = JSON.parse((await file.buffer()).toString('utf-8'));
 
           // Get title name, UUID
-          const entryPath = path.parse(entry.entryName);
+          const entryPath = path.parse(file.path);
           const coverPhotoPath = path.join(entryPath.dir, entryPath.name, img_path);
-          zip.extractEntryTo(
-            coverPhotoPath,
-            path.dirname(cachePath),
-            false,
-            true,
-            false,
-            path.basename(cachePath)
-          );
+          file.stream().pipe(fs.createWriteStream(cachePath));
         }
       }
     }

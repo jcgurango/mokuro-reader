@@ -8,8 +8,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "strict": true,
-    "types": ["node", "mime", "@types/adm-zip"]
+    "strict": true
   }
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
   //

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import AdmZip from 'adm-zip';
+import unzipper from 'unzipper';
 import type { Manga, MokuroData } from '$lib/types';
 
 export async function load() {
@@ -27,12 +27,11 @@ export async function load() {
         found = false;
 
         // Read metadata.
-        const zip = new AdmZip(path.join(dir, file));
-        const entries = zip.getEntries();
+        const zip = await unzipper.Open.file(path.join(dir, file));
 
-        for (let entry of entries) {
-          if (entry.entryName.endsWith('.mokuro')) {
-            fs.writeFileSync(metaPath, zip.readAsText(entry));
+        for (let file of zip.files) {
+          if (file.path.endsWith('.mokuro')) {
+            file.stream().pipe(fs.createWriteStream(metaPath));
             found = true;
             break;
           }
