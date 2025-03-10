@@ -9,9 +9,6 @@ export async function GET({ params }) {
   const imagePath = path.join(process.cwd(), '_library', filename);
 
   try {
-    // Read the file from disk
-    const fileBuffer = fs.readFileSync(imagePath);
-
     // Determine MIME type (simple approach). For production,
     // you might use 'mime' package or a switch statement for more accuracy.
     let contentType = mime.getType(filename) || 'application/octet-stream';
@@ -21,10 +18,10 @@ export async function GET({ params }) {
     }
 
     // Return the file in a Response object with appropriate headers
-    return new Response(fileBuffer, {
+    return new Response(fs.createReadStream(imagePath) as any, {
       headers: {
         'Content-Type': contentType,
-        'Content-Length': fileBuffer.byteLength.toString()
+        'Content-Length': fs.statSync(imagePath).size.toString()
       }
     });
   } catch (error) {

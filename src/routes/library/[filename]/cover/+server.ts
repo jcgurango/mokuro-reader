@@ -43,7 +43,7 @@ export async function GET({ params }) {
     }
 
     if (found) {
-      return new Response(fs.readFileSync(cachePath));
+      return new Response(fs.createReadStream(cachePath) as any);
     }
   } catch (error) {
     console.error(error);
