@@ -47,6 +47,8 @@
         if (contentLength) {
           showSnackbar('Progress: ' + Math.round((receivedBytes / contentLength) * 100) + '%', 0);
         }
+
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
 
       const blob = new Blob(chunks, { type: 'application/zip' });
