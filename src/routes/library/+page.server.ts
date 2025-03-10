@@ -26,20 +26,24 @@ export async function load() {
       if (!fs.existsSync(metaPath)) {
         found = false;
 
-        // Read metadata.
-        const zip = await unzipper.Open.file(path.join(dir, file));
+        try {
+          // Read metadata.
+          const zip = await unzipper.Open.file(path.join(dir, file));
 
-        for (let file of zip.files) {
-          if (file.path.endsWith('.mokuro')) {
-            await new Promise((resolve, reject) => {
-              file.stream().pipe(fs.createWriteStream(metaPath))
-                .on('error', reject)
-                .on('finish', () => resolve(undefined));
-            });
+          for (let file of zip.files) {
+            if (file.path.endsWith('.mokuro')) {
+              await new Promise((resolve, reject) => {
+                file.stream().pipe(fs.createWriteStream(metaPath))
+                  .on('error', reject)
+                  .on('finish', () => resolve(undefined));
+              });
 
-            found = true;
-            break;
+              found = true;
+              break;
+            }
           }
+        } catch (e) {
+          console.error(e);
         }
       }
 
